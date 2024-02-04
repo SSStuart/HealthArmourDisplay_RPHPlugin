@@ -14,6 +14,8 @@ namespace HealthArmourDisplay
         internal static int ArmourTextHorizontal = 260;
         internal static int ArmourIconVertical = 0;
         internal static int ArmourIconHorizontal = 200;
+        internal static int HungerDepletionSpeed = 600;
+        internal static int ThristDepletionSpeed = 900;
 
 
 
@@ -23,7 +25,7 @@ namespace HealthArmourDisplay
         internal static void LoadSettings()
         {
             Game.LogTrivial("[LOG]: Loading config file for " + EntryPoint.pluginName + ".");
-            
+
             ini.Create();
             BaseOffsetVertical = ini.ReadInt16("BasePosition", "BaseOffsetVertical", 45);
             BaseOffsetHorizontal = ini.ReadInt16("BasePosition", "BaseOffsetHorizontal", 65);
@@ -35,6 +37,8 @@ namespace HealthArmourDisplay
             ArmourTextHorizontal = ini.ReadInt16("ArmourTextPosition", "ArmourTextHorizontal", 260);
             ArmourIconVertical = ini.ReadInt16("ArmourIconPosition", "ArmourIconVertical", 0);
             ArmourIconHorizontal = ini.ReadInt16("ArmourIconPosition", "ArmourIconHorizontal", 200);
+            HungerDepletionSpeed = ini.ReadInt16("Hunger", "HungerDepletionSpeed", 600);
+            ThristDepletionSpeed = ini.ReadInt16("Thirst", "ThirstDepletionSpeed", 300);
         }
     }
 }
