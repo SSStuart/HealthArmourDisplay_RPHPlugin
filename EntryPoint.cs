@@ -24,46 +24,60 @@ namespace HealthArmourDisplay
             {
                 Color healthColor = Color.LightCoral;
                 Color armourColor = Color.DeepSkyBlue;
+                float fontSize = 0.4f;
 
                 // Waiting for the player to "exist"
-                while (!Game.LocalPlayer.Character.IsOnScreen)
+                /*while (!Game.LocalPlayer.Character.IsOnScreen)
                 {
                     GameFiber.Yield();
                 }
-                Ped player = Game.LocalPlayer.Character;
-                int playerMaxHealth = player.MaxHealth - 100;
-                int screenHeight = Game.Resolution.Height;
-                int screenWidth = Game.Resolution.Width;
-                Point offset = new Point(Settings.BaseOffsetHorizontal, screenHeight - Settings.BaseOffsetVertical);
+                Ped player = Game.LocalPlayer.Character;*/
+
+                int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;
+                double playerHealthPercent;
+                Point offset = new Point(Settings.BaseOffsetHorizontal, Game.Resolution.Height - Settings.BaseOffsetVertical);
 
                 while (true)
                 {
                     GameFiber.Yield();
 
 
-                    if (player.IsAlive)
+                    if (Game.LocalPlayer.Character.IsAlive)
                     {
                         // CIRCLE MINIMAP
                         // Health
-                        ResText.Draw(((player.Health-100)*100/playerMaxHealth).ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y + Settings.HealthTextVertical), 0.3f, healthColor, Common.EFont.Pricedown, false);
-                        Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HealthIconHorizontal, offset.Y + Settings.HealthIconVertical), new Size(50, 50), 0f, healthColor);
+                        playerHealthPercent = (Game.LocalPlayer.Character.Health - 100) * 100 / playerMaxHealth;
+                        Sprite.Draw("commonmenu", "shop_health_icon_a", new Point(offset.X + Settings.HealthIconHorizontal - 4, offset.Y - Settings.HealthIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb(255 - (int)(playerHealthPercent * 2.5), Color.Red));
+                        ResText.Draw(playerHealthPercent.ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y - Settings.HealthTextVertical), fontSize, healthColor, Common.EFont.Pricedown, false);
+                        Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HealthIconHorizontal, offset.Y - Settings.HealthIconVertical), new Size(50, 50), 0f, healthColor);
 
-                        //Armour
-                        Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + Settings.ArmourIconHorizontal, offset.Y + Settings.ArmourIconVertical), new Size(50, 50), 0f, armourColor);
-                        ResText.Draw(player.Armor.ToString(), new Point(offset.X + Settings.ArmourTextHorizontal, offset.Y + Settings.ArmourTextVertical), 0.3f, armourColor, Common.EFont.Pricedown, true);
+                        // Armour
+                        Sprite.Draw("commonmenu", "shop_armour_icon_a", new Point(offset.X + Settings.ArmourIconHorizontal - 4, offset.Y - Settings.ArmourIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb((int)(Game.LocalPlayer.Character.Armor * 2.5), armourColor));
+                        Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + Settings.ArmourIconHorizontal, offset.Y - Settings.ArmourIconVertical), new Size(50, 50), 0f, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor));
+                        ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + Settings.ArmourTextHorizontal, offset.Y - Settings.ArmourTextVertical), fontSize, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor), Common.EFont.Pricedown, false);
 
 
                         // SQUARE MINIMAP
                         /*Sprite.Draw("commonmenu", "bettingbox_centre", new Point(offset.X - 40, offset.Y + 4), new Size(270, 50), 0f, Color.FromArgb(100, Color.Black));
 
                         Sprite.Draw("commonmenu", "shop_health_icon_b", offset, new Size(50, 50), 0f, Color.LightCoral);
-                        ResText.Draw((player.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), 0.3f, Color.LightCoral, Common.EFont.ChaletLondon, true);
+                        ResText.Draw((Game.LocalPlayer.Character.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), 0.3f, Color.LightCoral, Common.EFont.ChaletLondon, true);
 
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + 100, offset.Y), new Size(50, 50), 0f, Color.LightBlue);
-                        ResText.Draw(player.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
+                        ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
                     }
                 }
             });
+        }
+    }
+
+
+    public static class ReloadHADOverlayCommand
+    {
+        [Rage.Attributes.ConsoleCommand]
+        public static void Command_ReloadHADOverlay()
+        {
+            Game.ReloadActivePlugin();
         }
     }
 }
