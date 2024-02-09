@@ -20,6 +20,7 @@ namespace HealthArmourDisplay
 
         static MenuPool myMenuPool = new MenuPool();
         static UIMenu storeMenu;
+        static UIMenu inventoryMenu;
         static List<List<float>> storesLocations = new List<List<float>>();
         static bool storeHelpDisplayed = false;
 
@@ -35,10 +36,30 @@ namespace HealthArmourDisplay
             GameFiber.StartNew(delegate
             {
                 Random random = new Random();
-                Color healthColor = HudColor.RadarHealth.GetColor();
-                Color armourColor = HudColor.RadarArmour.GetColor();
-                Color hungerColor = HudColor.OrangeLight.GetColor();
-                Color thirstColor = HudColor.BlueLight.GetColor();
+                
+                string patternRGB = @"\d{1,2},\d{1,2},\d{1,3}";
+                Color healthColor, armourColor, hungerColor, thirstColor;
+                if (Regex.Match(Settings.HealthColor, patternRGB, RegexOptions.IgnorePatternWhitespace) == Regex.Succes) {
+                    healthColor = Color.FromArgb(Settings.HealthColor.Split(','))
+                } else {
+                    healthColor = HudColor + Settings.HealthColor;
+                }
+                if (Regex.Match(Settings.ArmourColor, patternRGB, RegexOptions.IgnorePatternWhitespace) == Regex.Succes) {
+                    armourColor = Color.FromArgb(Settings.ArmourColor.Split(','))
+                } else {
+                    armourColor = HudColor + Settings.ArmourColor;
+                }
+                if (Regex.Match(Settings.HungerColor, patternRGB, RegexOptions.IgnorePatternWhitespace) == Regex.Succes) {
+                    hungerColor = Color.FromArgb(Settings.HungerColor.Split(','))
+                } else {
+                    hungerColor = HudColor + Settings.HungerColor;
+                }
+                if (Regex.Match(Settings.ThirstColor, patternRGB, RegexOptions.IgnorePatternWhitespace) == Regex.Succes) {
+                    thirstColor = Color.FromArgb(Settings.ThirstColor.Split(','))
+                } else {
+                    thirstColor = HudColor + Settings.ThirstColor;
+                }
+                
                 float fontSize = 0.4f;
                 int hunger = 100;
                 int thirst = 100;
