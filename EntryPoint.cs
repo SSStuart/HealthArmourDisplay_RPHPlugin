@@ -86,30 +86,26 @@ namespace HealthArmourDisplay
 
                 //Game.RawFrameRender += drawSprites;
 
-                while (Game.IsScreenFadedOut || !Game.LocalPlayer.Character.Exists() || Game.IsLoading)
+                /*while (Game.IsScreenFadedOut || !Game.LocalPlayer.Character.Exists() || Game.IsLoading)
                 {
                     GameFiber.Yield();
                 }
-                Game.LogTrivial("===========LOADED===========");
-                //Ped player = Game.LocalPlayer.Character;
-                int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;
+                Ped player = Game.LocalPlayer.Character;*/
+                int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;    // Player is killed by game when player health is under 100
                 double playerHealthPercent;
                 Point offset = new Point(Settings.BaseOffsetHorizontal, Game.Resolution.Height - Settings.BaseOffsetVertical);
 
-                Game.LogTrivial("[" + pluginName + "] Stores Locs : ");
+                Game.LogTrivial("[" + pluginName + "] Stores Locations :");
                 foreach (var loc in storesLocations)
                 {
                     Game.LogTrivial(loc[0] + " " + loc[1] + " " + loc[2]);
                 }
-                Game.LogTrivial("[" + pluginName + "] --------------");
+                Game.LogTrivial("[" + pluginName + "] ------------------");
 
                 // Menu
                 storeMenu = new UIMenu("Store", "~b~Drinks and snacks");
 
                 myMenuPool.Add(storeMenu);
-
-                // start the fiber which will handle drawing and processing the menus
-                GameFiber.StartNew(ProcessMenus);
 
                 foreach (var foodAndDrink in foodsAndDrinks)
                 {
@@ -118,7 +114,7 @@ namespace HealthArmourDisplay
                         itemcolor = hungerColor;
                     else
                         itemcolor = thirstColor;
-                    UIMenuItem item = new UIMenuItem(foodAndDrink[0], "$"+foodAndDrink[1]);
+                    UIMenuItem item = new UIMenuItem(foodAndDrink[0].Trim(), "$"+foodAndDrink[1].Trim());
                     item.ForeColor = itemcolor;
                     storeMenu.AddItem(item);
                     storeMenu.OnItemSelect += (sender, selectedItem, index) =>
@@ -128,8 +124,34 @@ namespace HealthArmourDisplay
                     };
                 }
 
+                inventoryMenu = new UIMenu("Inventory", "~b~Consumables");
 
-                Game.LogTrivial(foodsAndDrinks.Count.ToString());
+                myMenuPool.Add(inventoryMenu);
+
+                foreach (var foodAndDrink in foodsAndDrinks)
+                {
+                    Color itemcolor;
+                    if (foodAndDrink[2] == "food")
+                        itemcolor = hungerColor;
+                    else
+                        itemcolor = thirstColor;
+                    UIMenuItem item = new UIMenuItem(foodAndDrink[0].Trim(), foodAndDrink[3] + " in your inventory");
+                    item.ForeColor = itemcolor;
+                    if (foodAndDrink[3] < 1)
+                        item.Disabled = true;
+                    inventoryMenu.AddItem(item);
+                    inventoryMenu.OnItemSelect += (sender, selectedItem, index) =>
+                    {
+                        foodsAndDrinks[index][3] = (int.Parse(foodsAndDrinks[index][3]) - 1).ToString();
+                        if (foodAndDrink[index][2] == "food")
+                            hunger += 50;
+                        else if (foodAndDrink[index][2] == "drink")
+                            thrist += 50;
+                    };
+                }
+
+                // start the fiber which will handle drawing and processing the menus
+                GameFiber.StartNew(ProcessMenus);
 
 
                 while (true)
@@ -141,22 +163,32 @@ namespace HealthArmourDisplay
                         // CIRCLE MINIMAP
                         // Health
                         playerHealthPercent = (Game.LocalPlayer.Character.Health - 100) * 100 / playerMaxHealth;
+                        //   Border
                         Sprite.Draw("commonmenu", "shop_health_icon_a", new Point(offset.X + Settings.HealthIconHorizontal - 4, offset.Y - Settings.HealthIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb(255-(int)(playerHealthPercent*2.5), Color.Red));
+                        //   Text
                         ResText.Draw(playerHealthPercent.ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y - Settings.HealthTextVertical), fontSize, healthColor, Common.EFont.Pricedown, false);
+                        //   Icon
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HealthIconHorizontal, offset.Y - Settings.HealthIconVertical), new Size(50, 50), 0f, healthColor);
 
                         // Armour
+                        //   Border
                         Sprite.Draw("commonmenu", "shop_armour_icon_a", new Point(offset.X + Settings.ArmourIconHorizontal - 4, offset.Y - Settings.ArmourIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb((int)(Game.LocalPlayer.Character.Armor * 2.5), armourColor));
+                        //   Icon
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + Settings.ArmourIconHorizontal, offset.Y - Settings.ArmourIconVertical), new Size(50, 50), 0f, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor));
+                        //   Text
                         ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + Settings.ArmourTextHorizontal, offset.Y - Settings.ArmourTextVertical), fontSize, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor), Common.EFont.Pricedown, false);
 
                         // Hunger
+                        //   Icon
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HungerIconHorizontal, offset.Y - Settings.HungerIconVertical), new Size(50, 50), 0f, hungerColor);
+                        //   Text
                         ResText.Draw(hunger.ToString(), new Point(offset.X + Settings.HungerTextHorizontal, offset.Y - Settings.HungerTextVertical), fontSize, hungerColor, Common.EFont.Pricedown, false);
 
                         // Thirst
-                        Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.ThirstIconHorizontal, offset.Y - Settings.ThirstIconVertical), new Size(50, 50), 0f, thirstColor);
+                        //   Text
                         ResText.Draw(thirst.ToString(), new Point(offset.X + Settings.ThirstTextHorizontal, offset.Y - Settings.ThirstTextVertical), fontSize, thirstColor, Common.EFont.Pricedown, false);
+                        //   Icon
+                        Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.ThirstIconHorizontal, offset.Y - Settings.ThirstIconVertical), new Size(50, 50), 0f, thirstColor);
 
 
 
@@ -263,7 +295,7 @@ namespace HealthArmourDisplay
                     }
                 }
 
-                if (Game.IsKeyDown(Keys.E)) // the open/close trigger
+                if (Game.IsKeyDown(Keys.E) && !Game.IsControlDown()) // the open/close trigger
                 {
                     if (storeMenu.Visible)
                     {
@@ -274,6 +306,14 @@ namespace HealthArmourDisplay
                     {
                         // open the menu
                         storeMenu.Visible = true;
+                    }
+                }
+
+                if (Game.IsKeyDown(Keys.I) && Game.IsControlDown()) {
+                    if (inventoryMenu.Visible) {
+                        inventoryMenu.Visible = false;
+                    } else if (!UIMenu.IsAnyMenuVisible && !TabView.IsAnyPauseMenuVisible) {
+                        inventoryMenu.Visible = true;
                     }
                 }
             }
