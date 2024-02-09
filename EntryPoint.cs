@@ -33,7 +33,7 @@ namespace HealthArmourDisplay
                 }
                 Ped player = Game.LocalPlayer.Character;*/
 
-                int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;
+                int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;    // Player is killed by game when player health is under 100
                 double playerHealthPercent;
                 Point offset = new Point(Settings.BaseOffsetHorizontal, Game.Resolution.Height - Settings.BaseOffsetVertical);
 
