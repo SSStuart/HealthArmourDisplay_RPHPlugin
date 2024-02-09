@@ -107,7 +107,7 @@ namespace HealthArmourDisplay
 
                 //Game.RawFrameRender += drawSprites;
 
-                /*while (Game.IsScreenFadedOut || !Game.LocalPlayer.Character.Exists() || Game.IsLoading)
+                /*while (!Game.LocalPlayer.Character.IsOnScreen)
                 {
                     GameFiber.Yield();
                 }
@@ -185,7 +185,7 @@ namespace HealthArmourDisplay
                         // Health
                         playerHealthPercent = (Game.LocalPlayer.Character.Health - 100) * 100 / playerMaxHealth;
                         //   Border
-                        Sprite.Draw("commonmenu", "shop_health_icon_a", new Point(offset.X + Settings.HealthIconHorizontal - 4, offset.Y - Settings.HealthIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb(255-(int)(playerHealthPercent*2.5), Color.Red));
+                        Sprite.Draw("commonmenu", "shop_health_icon_a", new Point(offset.X + Settings.HealthIconHorizontal - 4, offset.Y - Settings.HealthIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb(255 - (int)(playerHealthPercent * 2.5), Color.Red));
                         //   Text
                         ResText.Draw(playerHealthPercent.ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y - Settings.HealthTextVertical), fontSize, healthColor, Common.EFont.Pricedown, false);
                         //   Icon
@@ -217,10 +217,10 @@ namespace HealthArmourDisplay
                         /*Sprite.Draw("commonmenu", "bettingbox_centre", new Point(offset.X - 40, offset.Y + 4), new Size(270, 50), 0f, Color.FromArgb(100, Color.Black));
 
                         Sprite.Draw("commonmenu", "shop_health_icon_b", offset, new Size(50, 50), 0f, Color.LightCoral);
-                        ResText.Draw((player.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), 0.3f, Color.LightCoral, Common.EFont.ChaletLondon, true);
+                        ResText.Draw((Game.LocalPlayer.Character.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), 0.3f, Color.LightCoral, Common.EFont.ChaletLondon, true);
 
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + 100, offset.Y), new Size(50, 50), 0f, Color.LightBlue);
-                        ResText.Draw(player.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
+                        ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
 
                         hungerDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.2f : Game.LocalPlayer.Character.IsRunning ? 0.5f : 1f;
                         thirstDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.1f : Game.LocalPlayer.Character.IsRunning ? 0.8f : 1.2f;
@@ -346,13 +346,12 @@ namespace HealthArmourDisplay
         }*/
     }
 
-    public static class ReloadOverlayCommand
+    public static class ReloadHADOverlayCommand
     {
         [Rage.Attributes.ConsoleCommand]
-        public static void Command_ReloadOverlay()
+        public static void Command_ReloadHADOverlay()
         {
-            // Reload the plugin
-            EntryPoint.Main();
+            Game.ReloadActivePlugin();
         }
     }
 }
