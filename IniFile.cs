@@ -1,6 +1,5 @@
 ﻿using Rage;
-using System;
-using System.Collections.Generic;
+using RAGENativeUI;
 
 namespace HealthArmourDisplay
 {
@@ -29,6 +28,8 @@ namespace HealthArmourDisplay
         internal static string StoreLocations = "";
         internal static string Drinks = "";
         internal static string Foods = "";
+        internal static Common.EFont FontFamily = Common.EFont.Pricedown;
+        internal static float FontSize = 0.4f;
 
 
 
@@ -68,6 +69,9 @@ namespace HealthArmourDisplay
             StoreLocations = ini.ReadString("Stores", "StoreLocations", "");
             Drinks = ini.ReadString("Stores", "Drinks", "");
             Foods = ini.ReadString("Stores", "Foods", "");
+
+            FontFamily = ini.ReadEnum("Font", "FontFamily", Common.EFont.Pricedown);
+            FontSize = ini.ReadSingle("Font", "FontSize", 0.4f);
         }
     }
 }

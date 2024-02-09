@@ -39,7 +39,8 @@ namespace HealthArmourDisplay
                 Color armourColor = HudColor.RadarArmour.GetColor();
                 Color hungerColor = HudColor.OrangeLight.GetColor();
                 Color thirstColor = HudColor.BlueLight.GetColor();
-                float fontSize = 0.4f;
+                Common.EFont fontFamily = Settings.FontFamily;
+                float fontSize = Settings.FontSize;
                 int hunger = 100;
                 int thirst = 100;
                 float hungerDepletionMult = 1;
@@ -129,9 +130,6 @@ namespace HealthArmourDisplay
                 }
 
 
-                Game.LogTrivial(foodsAndDrinks.Count.ToString());
-
-
                 while (true)
                 {
                     GameFiber.Yield();
@@ -142,21 +140,21 @@ namespace HealthArmourDisplay
                         // Health
                         playerHealthPercent = (Game.LocalPlayer.Character.Health - 100) * 100 / playerMaxHealth;
                         Sprite.Draw("commonmenu", "shop_health_icon_a", new Point(offset.X + Settings.HealthIconHorizontal - 4, offset.Y - Settings.HealthIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb(255-(int)(playerHealthPercent*2.5), Color.Red));
-                        ResText.Draw(playerHealthPercent.ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y - Settings.HealthTextVertical), fontSize, healthColor, Common.EFont.Pricedown, false);
+                        ResText.Draw(playerHealthPercent.ToString(), new Point(offset.X + Settings.HealthTextHorizontal, offset.Y - Settings.HealthTextVertical), fontSize, healthColor, fontFamily, false);
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HealthIconHorizontal, offset.Y - Settings.HealthIconVertical), new Size(50, 50), 0f, healthColor);
 
                         // Armour
                         Sprite.Draw("commonmenu", "shop_armour_icon_a", new Point(offset.X + Settings.ArmourIconHorizontal - 4, offset.Y - Settings.ArmourIconVertical - 4), new Size(58, 58), 0f, Color.FromArgb((int)(Game.LocalPlayer.Character.Armor * 2.5), armourColor));
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + Settings.ArmourIconHorizontal, offset.Y - Settings.ArmourIconVertical), new Size(50, 50), 0f, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor));
-                        ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + Settings.ArmourTextHorizontal, offset.Y - Settings.ArmourTextVertical), fontSize, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor), Common.EFont.Pricedown, false);
+                        ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + Settings.ArmourTextHorizontal, offset.Y - Settings.ArmourTextVertical), fontSize, Color.FromArgb(Game.LocalPlayer.Character.Armor == 0 ? 50 : 255, armourColor), fontFamily, false);
 
                         // Hunger
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.HungerIconHorizontal, offset.Y - Settings.HungerIconVertical), new Size(50, 50), 0f, hungerColor);
-                        ResText.Draw(hunger.ToString(), new Point(offset.X + Settings.HungerTextHorizontal, offset.Y - Settings.HungerTextVertical), fontSize, hungerColor, Common.EFont.Pricedown, false);
+                        ResText.Draw(hunger.ToString(), new Point(offset.X + Settings.HungerTextHorizontal, offset.Y - Settings.HungerTextVertical), fontSize, hungerColor, fontFamily, false);
 
                         // Thirst
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.ThirstIconHorizontal, offset.Y - Settings.ThirstIconVertical), new Size(50, 50), 0f, thirstColor);
-                        ResText.Draw(thirst.ToString(), new Point(offset.X + Settings.ThirstTextHorizontal, offset.Y - Settings.ThirstTextVertical), fontSize, thirstColor, Common.EFont.Pricedown, false);
+                        ResText.Draw(thirst.ToString(), new Point(offset.X + Settings.ThirstTextHorizontal, offset.Y - Settings.ThirstTextVertical), fontSize, thirstColor, fontFamily, false);
 
 
 
@@ -164,10 +162,10 @@ namespace HealthArmourDisplay
                         /*Sprite.Draw("commonmenu", "bettingbox_centre", new Point(offset.X - 40, offset.Y + 4), new Size(270, 50), 0f, Color.FromArgb(100, Color.Black));
 
                         Sprite.Draw("commonmenu", "shop_health_icon_b", offset, new Size(50, 50), 0f, Color.LightCoral);
-                        ResText.Draw((player.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), 0.3f, Color.LightCoral, Common.EFont.ChaletLondon, true);
+                        ResText.Draw((player.Health-100).ToString(), new Point(offset.X + 60, offset.Y + 12), fontSize, Color.LightCoral, fontFamily, true);
 
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + 100, offset.Y), new Size(50, 50), 0f, Color.LightBlue);
-                        ResText.Draw(player.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
+                        ResText.Draw(player.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), fontSize, Color.LightBlue, fontFamily, true);*/
 
                         hungerDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.2f : Game.LocalPlayer.Character.IsRunning ? 0.5f : 1f;
                         thirstDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.1f : Game.LocalPlayer.Character.IsRunning ? 0.8f : 1.2f;
@@ -290,8 +288,7 @@ namespace HealthArmourDisplay
         [Rage.Attributes.ConsoleCommand]
         public static void Command_ReloadOverlay()
         {
-            // Reload the plugin
-            EntryPoint.Main();
+            Game.ReloadActivePlugin();
         }
     }
 }
