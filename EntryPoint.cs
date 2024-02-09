@@ -60,7 +60,8 @@ namespace HealthArmourDisplay
                     thirstColor = HudColor + Settings.ThirstColor;
                 }
                 
-                float fontSize = 0.4f;
+                Common.EFont fontFamily = Settings.FontFamily;
+                float fontSize = Settings.FontSize;
                 int hunger = 100;
                 int thirst = 100;
                 float hungerDepletionMult = 1;
