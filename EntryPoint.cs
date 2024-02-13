@@ -9,14 +9,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-[assembly: Rage.Attributes.Plugin("Health & Armour Display", Description = "A plugin displaying the player's life and armour with an icon and its value", Author = "SSStuart")]
+[assembly: Rage.Attributes.Plugin("Health, Armour, Hunger & Thirst Display (HAHTD)", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
 
 
 namespace HealthArmourDisplay
 {
     public class EntryPoint
     {
-        public static string pluginName = "Health & Armour Display";
+        public static string pluginName = "HAHTD";
         public static string pluginVersion = "v 0.0.1";
 
         private static MenuPool myMenuPool;
