@@ -93,9 +93,9 @@ namespace HealthArmourDisplay
             ThirstIconHorizontal = ini.ReadInt16("Thirst", "IconHorizontal", 200);
             ThirstColor = ini.ReadString("Thirst", "Color", "HudColor.BlueLight");
             ThirstAnimationEnabled = ini.ReadBoolean("Thirst", "AnimationEnabled", true);
-            ThirstAnimDictio = ini.ReadString("Hunger", "AnimationDictionnary", "amb@world_human_drinking@coffee@male@idle_a");
-            ThirstAnimName = ini.ReadString("Hunger", "AnimationName", "idle_a");
-            ThirstAnimProp = ini.ReadString("Hunger", "AnimationProp", "prop_cs_beer_bot_01");
+            ThirstAnimDictio = ini.ReadString("Thirst", "AnimationDictionnary", "amb@world_human_drinking@coffee@male@idle_a");
+            ThirstAnimName = ini.ReadString("Thirst", "AnimationName", "idle_a");
+            ThirstAnimProp = ini.ReadString("Thirst", "AnimationProp", "prop_cs_beer_bot_01");
 
             StoreLocations = ini.ReadString("Stores", "StoreLocations", "29.537, -1345.474, 28.497 | -2969.773, 393.134, 14.043 | -1490.112, -378.83, 39.163 | 1137.569, -983.894, 45.416 | 1704.031, 4929.222, 41.064 | 1156.47, -322.609, 68.205 | -1827.282, 789.701, 137.254 | -1222.331, -904.582, 11.326 | -714.432, -912.26, 18.216 | -52.042, -1751.564, 28.421 | 544.2, 2668.531, 41.156 | 1963.312, 3744.618, 31.344 | 2555.542, 386.205, 107.623 | 377.961, 327.06, 102.566 | 2678.844, 3284.787, 54.241 | 1733.24, 6414.755, 34.037 | -3042.428, 588.687, 6.909 | -3243.83, 1005.144, 11.831 | 1164.038, 2707.052, 37.158");
             Drinks = ini.ReadString("Stores", "Drinks", "eCola: 2 | Pisswasser: 2 | Sprunk: 2");

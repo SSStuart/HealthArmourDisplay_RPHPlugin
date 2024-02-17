@@ -353,7 +353,8 @@ namespace HealthArmourDisplay
                             else if (hunger == 0)
                             {
                                 int randomValue = random.Next(0, 100);
-                                if (randomValue > (Game.LocalPlayer.Character.Health - 50))
+                                Game.DisplaySubtitle(randomValue.ToString());
+                                if (randomValue > (Game.LocalPlayer.Character.Health - 75))
                                 {
                                     Game.LocalPlayer.Character.IsRagdoll = true;
                                 }
@@ -388,10 +389,10 @@ namespace HealthArmourDisplay
                             else if (thirst == 0)
                             {
                                 int randomValue = random.Next(0, 100);
-                                if (randomValue > (Game.LocalPlayer.Character.Health - 50))
+                                if (randomValue > (Game.LocalPlayer.Character.Health - 80))
                                 {
                                     Game.FadeScreenOut(1500, true);
-                                    Game.FadeScreenIn(1000, true);
+                                    Game.FadeScreenIn(2000, true);
                                 }
                                 if (randomValue > 10 && randomValue < 50)
                                 {
