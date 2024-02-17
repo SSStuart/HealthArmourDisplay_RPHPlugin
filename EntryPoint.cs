@@ -243,7 +243,6 @@ namespace HealthArmourDisplay
                     };
                 }
 
-
                 while (true)
                 {
                     GameFiber.Yield();
@@ -279,7 +278,6 @@ namespace HealthArmourDisplay
                         ResText.Draw(thirst.ToString(), new Point(offset.X + Settings.ThirstTextHorizontal, offset.Y - Settings.ThirstTextVertical), fontSize, thirstColor, Common.EFont.Pricedown, false);
                         //   Icon
                         Sprite.Draw("commonmenu", "shop_health_icon_b", new Point(offset.X + Settings.ThirstIconHorizontal, offset.Y - Settings.ThirstIconVertical), new Size(50, 50), 0f, thirstColor);
-
 
 
                         // SQUARE MINIMAP
