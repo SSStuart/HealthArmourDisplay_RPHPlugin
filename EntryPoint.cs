@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-[assembly: Rage.Attributes.Plugin("Health, Armour, Hunger & Thirst Display (HAHTD)", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
+[assembly: Rage.Attributes.Plugin("HAHTD", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
 
 
 namespace HealthArmourDisplay
@@ -30,7 +30,7 @@ namespace HealthArmourDisplay
 
         public static void Main()
         {
-            Game.LogTrivial(pluginName + " loaded.");
+            Game.LogTrivial("Health, Armour, Hunger & Thirst Display loaded.");
 
             Settings.LoadSettings();
             Game.LogTrivial("[" + pluginName + "] Plugin settings loaded.");
@@ -184,7 +184,7 @@ namespace HealthArmourDisplay
                     storeItem.Activated += (menu, item) =>
                     {
                         foodsAndDrinks[storeMenu.CurrentSelection][3] = (int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][3]) + 1).ToString();
-                        Game.LocalPlayer.Character.Money -= int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][1]);
+                        // Game.LocalPlayer.Character.Money -= int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][1]);
                     };
                 }
 
@@ -210,9 +210,35 @@ namespace HealthArmourDisplay
                     {
                         foodsAndDrinks[inventoryMenu.CurrentSelection][3] = (int.Parse(foodsAndDrinks[inventoryMenu.CurrentSelection][3]) - 1).ToString();
                         if (foodsAndDrinks[inventoryMenu.CurrentSelection][2] == "food")
+                        {
+                            if (Settings.HungerAnimationEnabled)
+                            {
+                                Rage.Object foodItem = new Rage.Object(Settings.HungerAnimProp, Game.LocalPlayer.Character.Position)
+                                {
+                                    IsPersistent = false
+                                };
+                                foodItem.AttachTo(Game.LocalPlayer.Character, Game.LocalPlayer.Character.GetBoneIndex(PedBoneId.RightHand), new Vector3(0.14f, 0.05f, -0.04f), new Rotator(0f, 0f, 0f));
+
+                                Game.LocalPlayer.Character.Tasks.PlayAnimation(Settings.HungerAnimDictio, Settings.HungerAnimName, 8f, AnimationFlags.UpperBodyOnly).WaitForCompletion();
+                                foodItem.Detach();
+                            }
                             hunger = Math.Min(hunger + 50, 100);
+                        }
                         else if (foodsAndDrinks[inventoryMenu.CurrentSelection][2] == "drink")
+                        {
+                            if (Settings.ThirstAnimationEnabled)
+                            {
+                                Rage.Object drinkBottle = new Rage.Object(Settings.ThirstAnimProp, Game.LocalPlayer.Character.Position)
+                                {
+                                    IsPersistent = false
+                                };
+                                drinkBottle.AttachTo(Game.LocalPlayer.Character, Game.LocalPlayer.Character.GetBoneIndex(PedBoneId.RightHand), new Vector3(0.14f, 0.03f, -0.03f), new Rotator(90f, 180f, 0f));
+
+                                Game.LocalPlayer.Character.Tasks.PlayAnimation(Settings.ThirstAnimDictio, Settings.ThirstAnimName, 1f, AnimationFlags.UpperBodyOnly).WaitForCompletion();
+                                drinkBottle.Detach();
+                            }
                             thirst = Math.Min(thirst + 50, 100);
+                        }
                         UpdateInventoryMenu();
                     };
                 }
@@ -222,7 +248,7 @@ namespace HealthArmourDisplay
                 {
                     GameFiber.Yield();
 
-                    if (Game.LocalPlayer.Character.IsAlive)
+                    if (Game.LocalPlayer.Character.IsAlive && !Game.IsPaused)
                     {
                         // CIRCLE MINIMAP
                         // Health
@@ -265,8 +291,29 @@ namespace HealthArmourDisplay
                         Sprite.Draw("commonmenu", "shop_armour_icon_b", new Point(offset.X + 100, offset.Y), new Size(50, 50), 0f, Color.LightBlue);
                         ResText.Draw(Game.LocalPlayer.Character.Armor.ToString(), new Point(offset.X + 160, offset.Y + 12), 0.3f, Color.LightBlue, Common.EFont.ChaletLondon, true);*/
 
-                        hungerDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.2f : Game.LocalPlayer.Character.IsRunning ? 0.5f : 1f;
-                        thirstDepletionMult = Game.LocalPlayer.Character.IsSprinting ? 0.1f : Game.LocalPlayer.Character.IsRunning ? 0.8f : 1.2f;
+                        switch (Game.LocalPlayer.Character)
+                        {
+                            case Ped player when player.IsSprinting:
+                                hungerDepletionMult = 0.2f;
+                                thirstDepletionMult = 0.3f;
+                                break;
+                            case Ped player when player.IsRunning:
+                                hungerDepletionMult = 0.5f;
+                                thirstDepletionMult = 0.7f;
+                                break;
+                            case Ped player when player.IsSwimming:
+                                hungerDepletionMult = 0.8f;
+                                thirstDepletionMult = 0.8f;
+                                break;
+                            case Ped player when player.IsDiving:
+                                hungerDepletionMult = 0.3f;
+                                thirstDepletionMult = 0.5f;
+                                break;
+                            default:
+                                hungerDepletionMult = 1.0f;
+                                thirstDepletionMult = 1.0f;
+                                break;
+                        }
 
 
                         // Create a new game fiber to show the stores locations
@@ -291,10 +338,21 @@ namespace HealthArmourDisplay
                         if (lastHungerUpdate + Settings.HungerDepletionSpeed * 100 * hungerDepletionMult < Game.GameTime)
                         {
                             lastHungerUpdate = Game.GameTime;
+                            if (hunger < 20 && Settings.AutoConsume)
+                            {
+                                foreach (var foodAndDrink in foodsAndDrinks)
+                                {
+                                    if (foodAndDrink[2] == "food" && int.Parse(foodAndDrink[3]) > 0)
+                                    {
+                                        foodsAndDrinks[foodsAndDrinks.IndexOf(foodAndDrink)][3] = (int.Parse(foodAndDrink[3]) - 1).ToString();
+                                        hunger = Math.Min(hunger + 50, 100);
+                                        break;
+                                    }
+                                }
+                            }
                             if (hunger > 0)
                                 hunger--;
-                            if (hunger == 0)
-
+                            else if (hunger == 0)
                             {
                                 int randomValue = random.Next(0, 100);
                                 if (randomValue > (Game.LocalPlayer.Character.Health - 50))
@@ -312,13 +370,24 @@ namespace HealthArmourDisplay
                             }
                         }
 
-                        if (lastThirstUpdate + Settings.ThristDepletionSpeed * 100 * thirstDepletionMult < Game.GameTime)
+                        if (lastThirstUpdate + Settings.ThirstDepletionSpeed * 100 * thirstDepletionMult < Game.GameTime)
                         {
                             lastThirstUpdate = Game.GameTime;
+                            if (thirst < 20 && Settings.AutoConsume)
+                            {
+                                foreach (var foodAndDrink in foodsAndDrinks)
+                                {
+                                    if (foodAndDrink[2] == "drink" && int.Parse(foodAndDrink[3]) > 0)
+                                    {
+                                        foodsAndDrinks[foodsAndDrinks.IndexOf(foodAndDrink)][3] = (int.Parse(foodAndDrink[3]) - 1).ToString();
+                                        thirst = Math.Min(thirst + 50, 100);
+                                        break;
+                                    }
+                                }
+                            }
                             if (thirst > 0)
                                 thirst--;
-                            if (thirst == 0)
-
+                            else if (thirst == 0)
                             {
                                 int randomValue = random.Next(0, 100);
                                 if (randomValue > (Game.LocalPlayer.Character.Health - 50))
@@ -387,7 +456,6 @@ namespace HealthArmourDisplay
 
         private static void UpdateInventoryMenu()
         {
-            Game.DisplaySubtitle("Updating inventory menu");
             for (int i = 0; i < foodsAndDrinks.Count; i++)
             {
                 if (int.Parse(foodsAndDrinks[i][3]) < 1)
@@ -404,7 +472,8 @@ namespace HealthArmourDisplay
 
         /*static void drawSprites(object sender, GraphicsEventArgs e)
         {
-            Sprite.DrawTexture(Game.CreateTextureFromFile(@"D:\Jeux\Rockstar Games\Grand Theft Auto V\plugins\hunger.png"), new Point(10, 10), new Size(100, 100), e.Graphics);
+            Sprite.DrawTexture(Game.CreateTextureFromFile(@"D:\Jeux\Rockstar Games\Grand Theft Auto V\plugins\thirst.png"), new Point(10, 10), new Size(100, 100), e.Graphics);
+            Game.RawFrameRender -= drawSprites;
         }*/
     }
 
