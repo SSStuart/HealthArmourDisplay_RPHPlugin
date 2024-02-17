@@ -42,7 +42,7 @@ namespace HealthArmourDisplay
                     GameFiber.Yield();
 
 
-                    if (Game.LocalPlayer.Character.IsAlive)
+                    if (Game.LocalPlayer.Character.IsAlive && !Game.IsPaused)
                     {
                         // CIRCLE MINIMAP
                         // Health
