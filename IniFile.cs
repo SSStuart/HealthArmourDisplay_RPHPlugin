@@ -1,5 +1,6 @@
 ﻿using Rage;
 using RAGENativeUI;
+using System.Windows.Forms;
 
 namespace HealthArmourDisplay
 {
@@ -45,7 +46,11 @@ namespace HealthArmourDisplay
         internal static string StoreLocations = "29.537, -1345.474, 28.497 | -2969.773, 393.134, 14.043 | -1490.112, -378.83, 39.163 | 1137.569, -983.894, 45.416 | 1704.031, 4929.222, 41.064 | 1156.47, -322.609, 68.205 | -1827.282, 789.701, 137.254 | -1222.331, -904.582, 11.326 | -714.432, -912.26, 18.216 | -52.042, -1751.564, 28.421 | 544.2, 2668.531, 41.156 | 1963.312, 3744.618, 31.344 | 2555.542, 386.205, 107.623 | 377.961, 327.06, 102.566 | 2678.844, 3284.787, 54.241 | 1733.24, 6414.755, 34.037 | -3042.428, 588.687, 6.909 | -3243.83, 1005.144, 11.831 | 1164.038, 2707.052, 37.158";
         internal static string Drinks = "eCola: 2 | Pisswasser: 2 | Sprunk: 2";
         internal static string Foods = "EgoChaser: 3 | Meteorite Bar: 5 | P's & Q's: 2";
+        
         internal static bool AutoConsume = false;
+        internal static Keys StoreKey = Keys.E;
+        internal static Keys InventoryKey = Keys.I;
+        internal static Keys InventoryModifier = Keys.LControlKey;
 
         internal static Common.EFont FontFamily = Common.EFont.Pricedown;
         internal static float FontSize = 0.4f;
@@ -100,7 +105,11 @@ namespace HealthArmourDisplay
             StoreLocations = ini.ReadString("Stores", "StoreLocations", "29.537, -1345.474, 28.497 | -2969.773, 393.134, 14.043 | -1490.112, -378.83, 39.163 | 1137.569, -983.894, 45.416 | 1704.031, 4929.222, 41.064 | 1156.47, -322.609, 68.205 | -1827.282, 789.701, 137.254 | -1222.331, -904.582, 11.326 | -714.432, -912.26, 18.216 | -52.042, -1751.564, 28.421 | 544.2, 2668.531, 41.156 | 1963.312, 3744.618, 31.344 | 2555.542, 386.205, 107.623 | 377.961, 327.06, 102.566 | 2678.844, 3284.787, 54.241 | 1733.24, 6414.755, 34.037 | -3042.428, 588.687, 6.909 | -3243.83, 1005.144, 11.831 | 1164.038, 2707.052, 37.158");
             Drinks = ini.ReadString("Stores", "Drinks", "eCola: 2 | Pisswasser: 2 | Sprunk: 2");
             Foods = ini.ReadString("Stores", "Foods", "EgoChaser: 3 | Meteorite Bar: 5 | P's & Q's: 2");
-            AutoConsume = ini.ReadBoolean("Stores", "AutoConsume", false);
+            
+            AutoConsume = ini.ReadBoolean("Other", "AutoConsume", false);
+            StoreKey = ini.ReadEnum("Other", "StoreKey", Keys.E);
+            InventoryKey = ini.ReadEnum("Other", "InventoryKey", Keys.I);
+            InventoryModifier = ini.ReadEnum("Other", "InventoryModifier", Keys.LControlKey);
 
             FontFamily = ini.ReadEnum("Font", "FontFamily", Common.EFont.Pricedown);
             FontSize = ini.ReadSingle("Font", "FontSize", 0.4f);

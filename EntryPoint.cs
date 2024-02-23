@@ -7,16 +7,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
-[assembly: Rage.Attributes.Plugin("HAHTD", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
+[assembly: Rage.Attributes.Plugin("HAHTDisplay", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
 
 
 namespace HealthArmourDisplay
 {
     public class EntryPoint
     {
-        public static string pluginName = "HAHTD";
+        public static string pluginName = "HAHTDisplay";
         public static string pluginVersion = "v 0.0.1";
 
         private static MenuPool myMenuPool;
@@ -327,7 +326,7 @@ namespace HealthArmourDisplay
                                 }
                                 if (distance < 2 && !storeHelpDisplayed)
                                 {
-                                    Game.DisplayHelp("Press ~b~E~w~ to buy food and drinks");
+                                    Game.DisplayHelp("Press ~b~"+Settings.StoreKey+"~w~ to buy food and drinks");
                                     storeHelpDisplayed = true;
                                 }else { storeHelpDisplayed = false;}
                             }
@@ -427,7 +426,7 @@ namespace HealthArmourDisplay
                     }
                 }
 
-                if (Game.IsKeyDown(Keys.E) && !Game.IsControlKeyDownRightNow) // the open/close trigger
+                if (Game.IsKeyDown(Settings.StoreKey) && !Game.IsControlKeyDownRightNow) // the open/close trigger
                 {
                     if (storeMenu.Visible)
                     {
@@ -441,7 +440,7 @@ namespace HealthArmourDisplay
                     }
                 }
 
-                if (Game.IsKeyDown(Keys.I) && Game.IsControlKeyDownRightNow) {
+                if (Game.IsKeyDown(Settings.InventoryKey) && Game.IsKeyDownRightNow(Settings.InventoryModifier)) {
                     if (inventoryMenu.Visible) {
                         inventoryMenu.Visible = false;
                     } else if (!UIMenu.IsAnyMenuVisible && !TabView.IsAnyPauseMenuVisible) {
