@@ -352,7 +352,6 @@ namespace HealthArmourDisplay
                             else if (hunger == 0)
                             {
                                 int randomValue = random.Next(0, 100);
-                                Game.DisplaySubtitle(randomValue.ToString());
                                 if (randomValue > (Game.LocalPlayer.Character.Health - 75))
                                 {
                                     Game.LocalPlayer.Character.IsRagdoll = true;
