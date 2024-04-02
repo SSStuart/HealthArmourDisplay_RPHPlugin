@@ -51,6 +51,7 @@ namespace HealthArmourDisplay
         internal static Keys StoreKey = Keys.E;
         internal static Keys InventoryKey = Keys.I;
         internal static Keys InventoryModifier = Keys.LControlKey;
+        internal static string Inventory = "2 | 0 | 0 | 0 | 4 | 0";
 
         internal static Common.EFont FontFamily = Common.EFont.Pricedown;
         internal static float FontSize = 0.4f;
@@ -110,9 +111,15 @@ namespace HealthArmourDisplay
             StoreKey = ini.ReadEnum("Other", "StoreKey", Keys.E);
             InventoryKey = ini.ReadEnum("Other", "InventoryKey", Keys.I);
             InventoryModifier = ini.ReadEnum("Other", "InventoryModifier", Keys.LControlKey);
+            Inventory = ini.ReadString("Other", "Inventory", "2 | 0 | 0 | 0 | 4 | 0");
 
             FontFamily = ini.ReadEnum("Font", "FontFamily", Common.EFont.Pricedown);
             FontSize = ini.ReadSingle("Font", "FontSize", 0.4f);
+        }
+
+        internal static void SaveSettings(string foo, string bar, var value) {
+            ini.Write("Other", "Inventory", value);
+            // A mETTRE EN PLACE
         }
     }
 }

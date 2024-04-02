@@ -139,6 +139,15 @@ namespace HealthArmourDisplay
                     foodsAndDrinks.Add(foodList);
                 }
 
+                // NEED TO BE TESTED (.INI FILE NEED TO BE UPDATED)
+                int savedInventoryLenght = Settings.Inventory.Split('|').Length;
+                if (savedInventoryLenght == foodsAndDrinks.Count) {
+                    int itemindex = 0;
+                    foreach (var inventoryItem in foodsAndDrinks) {
+                        inventoryItem[3] = Settings.Inventory.Split('|')[itemindex];
+                    }
+                }
+
 
                 //Game.RawFrameRender += drawSprites;
 
@@ -183,6 +192,7 @@ namespace HealthArmourDisplay
                     storeItem.Activated += (menu, item) =>
                     {
                         foodsAndDrinks[storeMenu.CurrentSelection][3] = (int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][3]) + 1).ToString();
+                        
                         // Game.LocalPlayer.Character.Money -= int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][1]);
                     };
                 }
