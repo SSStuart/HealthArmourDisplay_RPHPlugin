@@ -117,9 +117,8 @@ namespace HealthArmourDisplay
             FontSize = ini.ReadSingle("Font", "FontSize", 0.4f);
         }
 
-        internal static void SaveSettings(string foo, string bar, var value) {
-            ini.Write("Other", "Inventory", value);
-            // A mETTRE EN PLACE
+        internal static void SaveSettings(string section, string key, string value) {
+            ini.Write(section, key, value);
         }
     }
 }

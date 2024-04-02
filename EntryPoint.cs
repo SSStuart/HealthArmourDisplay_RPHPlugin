@@ -139,12 +139,12 @@ namespace HealthArmourDisplay
                     foodsAndDrinks.Add(foodList);
                 }
 
-                // NEED TO BE TESTED (.INI FILE NEED TO BE UPDATED)
                 int savedInventoryLenght = Settings.Inventory.Split('|').Length;
                 if (savedInventoryLenght == foodsAndDrinks.Count) {
                     int itemindex = 0;
                     foreach (var inventoryItem in foodsAndDrinks) {
-                        inventoryItem[3] = Settings.Inventory.Split('|')[itemindex];
+                        inventoryItem[3] = Settings.Inventory.Split('|')[itemindex].Trim();
+                        itemindex++;
                     }
                 }
 
@@ -192,7 +192,7 @@ namespace HealthArmourDisplay
                     storeItem.Activated += (menu, item) =>
                     {
                         foodsAndDrinks[storeMenu.CurrentSelection][3] = (int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][3]) + 1).ToString();
-                        
+                        SaveInventory();
                         // Game.LocalPlayer.Character.Money -= int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][1]);
                     };
                 }
@@ -475,6 +475,19 @@ namespace HealthArmourDisplay
                     inventoryMenu.MenuItems[i].Description = "You have " + foodsAndDrinks[i][3] + " " + foodsAndDrinks[i][0].Trim() + " in your inventory";
                 }
             }
+
+            SaveInventory();
+        }
+
+        private static void SaveInventory()
+        {
+            string inventoryString = "";
+            foreach (List<string> inventoryItem in foodsAndDrinks)
+            {
+                inventoryString += inventoryItem[3] + " | ";
+            }
+            inventoryString = inventoryString.Remove(inventoryString.Length - 3);
+            Settings.SaveSettings("Other", "Inventory", inventoryString);
         }
 
         /*static void drawSprites(object sender, GraphicsEventArgs e)
