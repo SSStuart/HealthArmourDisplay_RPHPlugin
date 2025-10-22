@@ -70,12 +70,17 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="example.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call C:\Users\Stuart\source\repos\HealthArmourDisplay\bin\x64\Debug\Z-[moveToPluginsFolder].bat</PostBuildEvent>
+    <PostBuildEvent>call C:\Users\SSStuart\source\repos\HealthArmourDisplay\bin\x64\Debug\Z-[moveToPluginsFolder].bat</PostBuildEvent>
   </PropertyGroup>
 </Project>

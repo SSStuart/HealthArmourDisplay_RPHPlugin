@@ -63,7 +63,7 @@ namespace HealthArmourDisplay
 
         internal static void LoadSettings()
         {
-            Game.LogTrivial("[LOG]: Loading config file for " + EntryPoint.pluginName + ".");
+            Game.LogTrivial($"[{EntryPoint.pluginName}] Loading plugin settings...");
 
             ini.Create();
             BaseOffsetVertical = ini.ReadInt16("BasePosition", "BaseOffsetVertical", 45);

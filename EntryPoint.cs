@@ -6,17 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
-[assembly: Rage.Attributes.Plugin("HAHTDisplay", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart")]
-
+[assembly: Rage.Attributes.Plugin("HAHTDisplay", Description = "A plugin displaying the player's life and armour with an icon and its value. Also add an hunger and thirst system", Author = "SSStuart", PrefersSingleInstance = true, SupportUrl = "https://ssstuart.net/discord")]
 
 namespace HealthArmourDisplay
 {
     public class EntryPoint
     {
         public static string pluginName = "HAHTDisplay";
-        public static string pluginVersion = "v 0.0.1";
+        public static string pluginVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         private static MenuPool myMenuPool;
         private static UIMenu storeMenu;
@@ -29,10 +29,12 @@ namespace HealthArmourDisplay
 
         public static void Main()
         {
-            Game.LogTrivial("Health, Armour, Hunger & Thirst Display loaded.");
+            Game.LogTrivial($"{pluginName} Plugin v{pluginVersion} has been loaded.");
 
             Settings.LoadSettings();
-            Game.LogTrivial("[" + pluginName + "] Plugin settings loaded.");
+            Game.LogTrivial($"[{pluginName}] Plugin settings loaded.");
+
+            UpdateChecker.CheckForUpdates();
 
             GameFiber.StartNew(delegate
             {
@@ -102,7 +104,6 @@ namespace HealthArmourDisplay
                 float thirstDepletionMult = 1.5f;
                 uint lastHungerUpdate = 0;
                 uint lastThirstUpdate = 0;
-
                
                 List<string> storesLocationsString = Settings.StoreLocations.Split('|').ToList();
                 foreach (var coordinates in storesLocationsString)
@@ -148,14 +149,6 @@ namespace HealthArmourDisplay
                     }
                 }
 
-
-                //Game.RawFrameRender += drawSprites;
-
-                /*while (!Game.LocalPlayer.Character.IsOnScreen)
-                {
-                    GameFiber.Yield();
-                }
-                Ped player = Game.LocalPlayer.Character;*/
                 int playerMaxHealth = Game.LocalPlayer.Character.MaxHealth - 100;    // Player is killed by game when player health is under 100
                 double playerHealthPercent;
                 Point offset = new Point(Settings.BaseOffsetHorizontal, Game.Resolution.Height - Settings.BaseOffsetVertical);
@@ -193,7 +186,6 @@ namespace HealthArmourDisplay
                     {
                         foodsAndDrinks[storeMenu.CurrentSelection][3] = (int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][3]) + 1).ToString();
                         SaveInventory();
-                        // Game.LocalPlayer.Character.Money -= int.Parse(foodsAndDrinks[storeMenu.CurrentSelection][1]);
                     };
                 }
 
