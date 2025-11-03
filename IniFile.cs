@@ -63,7 +63,7 @@ namespace HealthArmourDisplay
 
         internal static void LoadSettings()
         {
-            Game.LogTrivial($"[{EntryPoint.pluginName}] Loading plugin settings...");
+            Game.LogTrivial($"Loading plugin settings...");
 
             ini.Create();
             BaseOffsetVertical = ini.ReadInt16("BasePosition", "BaseOffsetVertical", 45);
@@ -115,6 +115,8 @@ namespace HealthArmourDisplay
 
             FontFamily = ini.ReadEnum("Font", "FontFamily", Common.EFont.Pricedown);
             FontSize = ini.ReadSingle("Font", "FontSize", 0.4f);
+
+            Game.LogTrivial($"Plugin settings loaded.");
         }
 
         internal static void SaveSettings(string section, string key, string value) {

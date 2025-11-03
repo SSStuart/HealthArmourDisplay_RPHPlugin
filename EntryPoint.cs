@@ -29,10 +29,9 @@ namespace HealthArmourDisplay
 
         public static void Main()
         {
-            Game.LogTrivial($"{pluginName} Plugin v{pluginVersion} has been loaded.");
+            Game.LogTrivial($"{pluginName} plugin v{pluginVersion} has been loaded.");
 
             Settings.LoadSettings();
-            Game.LogTrivial($"[{pluginName}] Plugin settings loaded.");
 
             UpdateChecker.CheckForUpdates();
 
@@ -114,7 +113,7 @@ namespace HealthArmourDisplay
                     if (xOk && yOk && zOk)
                         storesLocations.Add(new List<float> { x, y, z });
                     else
-                        Game.LogTrivial("[" + pluginName + "] Error parsing store location : " + coordinates);
+                        Game.LogTrivial("Error parsing store location : " + coordinates);
                 }
 
 
@@ -153,12 +152,12 @@ namespace HealthArmourDisplay
                 double playerHealthPercent;
                 Point offset = new Point(Settings.BaseOffsetHorizontal, Game.Resolution.Height - Settings.BaseOffsetVertical);
 
-                Game.LogTrivial("[" + pluginName + "] Stores Locations :");
+                Game.LogTrivial("Stores Locations :");
                 foreach (var loc in storesLocations)
                 {
                     Game.LogTrivial(loc[0] + " " + loc[1] + " " + loc[2]);
                 }
-                Game.LogTrivial("[" + pluginName + "] ------------------");
+                Game.LogTrivial("------------------");
 
                 // Menu
                 myMenuPool = new MenuPool();
